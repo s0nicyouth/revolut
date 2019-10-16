@@ -1,0 +1,62 @@
+apply plugin: 'com.android.application'
+
+apply plugin: 'kotlin-android'
+
+apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'kotlin-kapt'
+
+apply from: '../versions.gradle'
+
+android {
+    compileSdkVersion 29
+    buildToolsVersion "29.0.2"
+    defaultConfig {
+        applicationId "com.syouth.revolut"
+        minSdkVersion 21
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation "androidx.appcompat:appcompat:$versions.appcompat"
+    implementation "com.android.support.constraint:constraint-layout:$versions.constraintlayout"
+    implementation "androidx.recyclerview:recyclerview:$versions.recycler"
+    api "com.google.code.findbugs:jsr305:$versions.findbugs"
+
+    implementation "com.google.dagger:dagger:$versions.dagger"
+    kapt "com.google.dagger:dagger-compiler:$versions.dagger"
+
+    implementation "com.squareup.moshi:moshi:$versions.moshi"
+    implementation "com.squareup.moshi:moshi-kotlin:$versions.moshi"
+    implementation "com.squareup.moshi:moshi-adapters:$versions.moshi"
+    kapt "com.squareup.moshi:moshi-kotlin-codegen:$versions.moshi"
+
+    implementation "com.squareup.okhttp3:okhttp:$versions.okhttp"
+
+    implementation "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle"
+
+    debugImplementation "com.squareup.leakcanary:leakcanary-android:$versions.leakcanary"
+
+    testImplementation "junit:junit:$versions.junit"
+    testImplementation "org.robolectric:robolectric:$versions.robolectric"
+    testImplementation "org.mockito:mockito-core:$versions.mockito"
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito"
+}

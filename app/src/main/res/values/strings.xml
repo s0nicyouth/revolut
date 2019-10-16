@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Rates</string>
+    <string name="error">An error occurred. Refresh will continue.</string>
+</resources>

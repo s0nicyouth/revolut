@@ -1,0 +1,16 @@
+ext.versions = [
+        dagger:             '2.24',
+        moshi:              '1.8.0',
+        okhttp:             '4.2.1',
+        appcompat:          '1.1.0',
+        lifecycle:          '2.1.0',
+        constraintlayout:   '1.1.3',
+        flagkit:            '1.0',
+        recycler:           '1.0.0',
+        findbugs:           '3.0.2',
+        leakcanary:         '2.0-beta-3',
+
+        junit:              '4.12',
+        robolectric:        '4.3.1',
+        mockito:            '2.2.0'
+]

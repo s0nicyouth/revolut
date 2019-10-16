@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/rate_layout_height"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:id="@+id/id_flag"
+        android:layout_width="@dimen/flag_size"
+        android:layout_height="@dimen/flag_size"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/id_short_currency_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="72dp"
+        android:layout_marginTop="@dimen/margin"
+        tools:text="USD"/>
+
+    <TextView
+        android:id="@+id/id_currency_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginStart="72dp"
+        android:layout_marginBottom="@dimen/margin"
+        tools:text="US Dollar"/>
+
+    <EditText
+        android:id="@+id/id_converted_rate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center_vertical"
+        android:layout_marginEnd="@dimen/margin"
+        android:inputType="numberDecimal"
+        android:digits="0123456789.,"
+        tools:text="1.567"/>
+
+</FrameLayout>
