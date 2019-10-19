@@ -1,7 +1,6 @@
 package com.syouth.revolut.rates.model
 
 import android.os.Build
-import android.os.Handler
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -56,7 +55,7 @@ class RatesRemoteModelTest {
             .add(Date::class.java, Rfc3339DateJsonAdapter())
             .build()
         val requestRepeaterFactory = RequestRepeaterFactory(client)
-        ratesRemoteModel = RatesRemoteModel(requestRepeaterFactory, moshi, Handler())
+        ratesRemoteModel = RatesRemoteModel(requestRepeaterFactory, moshi)
     }
 
     @Test

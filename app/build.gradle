@@ -59,4 +59,7 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$versions.robolectric"
     testImplementation "org.mockito:mockito-core:$versions.mockito"
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:$versions.mockito"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$versions.coroutines"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutines"
 }

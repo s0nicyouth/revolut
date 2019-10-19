@@ -1,21 +1,20 @@
 package com.syouth.revolut.rates.model
 
-import android.os.Handler
-import android.os.Looper
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.squareup.moshi.Moshi
 import com.syouth.revolut.dagger.ViewScope
-import com.syouth.revolut.dagger.WORKER_HANDLER
 import com.syouth.revolut.net.RequestRepeaterFactory
-import com.syouth.revolut.net.ResponseCallback
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import okhttp3.Request
-import java.io.Closeable
-import java.io.IOException
 import java.math.BigDecimal
+import java.math.MathContext
 import javax.inject.Inject
-import javax.inject.Named
 
 private const val RATES_URL = "https://revolut.duckdns.org/latest?base=EUR"
 
@@ -26,50 +25,38 @@ private const val RATES_URL = "https://revolut.duckdns.org/latest?base=EUR"
 @ViewScope
 class RatesRemoteModel @Inject constructor(
     private val requestRepeaterFactory: RequestRepeaterFactory,
-    private val moshi: Moshi,
-    @Named(WORKER_HANDLER) private val workerHandler: Handler
-) : ResponseCallback {
+    private val moshi: Moshi) {
 
-    private var currentRequest: Closeable? = null
-    private val request = Runnable {
-        currentRequest = requestRepeaterFactory.create(
-            Request.Builder().url(RATES_URL).build(), this)
-    }
+    private val context = CoroutineScope(Dispatchers.Unconfined)
+
+    private var currentRequest: Job? = null
 
     private val ratesRemoteSourceObservableInternal = object : MutableLiveData<RatesModelScheme>() {
         override fun onInactive() {
-            workerHandler.post {
-                workerHandler.removeCallbacks(request)
-                currentRequest?.close()
-            }
+            currentRequest?.cancel()
         }
 
-        override fun onActive() {
-            workerHandler.post(request)
-        }
+        override fun onActive() = request()
 
     }
     val ratesRemoteSourceObservable =
         ratesRemoteSourceObservableInternal as LiveData<RatesModelScheme>
 
-    @WorkerThread
-    override fun invoke(response: String) {
-        check(workerHandler.looper == Looper.myLooper()) { throw IllegalThreadStateException("Should be called on worker thread") }
-
-        try {
-            moshi.adapter(RatesModelScheme::class.java).fromJson(response)?.let {
+    private fun request() {
+        currentRequest = context.launch {
+            while (isActive) {
+                val ratesModelScheme = moshi.adapter(RatesModelScheme::class.java).fromJson(
+                    requestRepeaterFactory.create(Request.Builder().url(RATES_URL).build()))!!
                 ratesRemoteSourceObservableInternal.postValue(
                     RatesModelScheme(
-                        it.base,
-                        it.date,
+                        ratesModelScheme.base,
+                        ratesModelScheme.date,
                         linkedMapOf<String, BigDecimal>().apply {
-                            put(it.base, 1.toBigDecimal())
-                            putAll(it.rates)
+                            put(ratesModelScheme.base, 1.toBigDecimal(MathContext.DECIMAL128))
+                            putAll(ratesModelScheme.rates)
                         }))
+                delay(1000)
             }
-        } catch (_: IOException) {}
-        if (ratesRemoteSourceObservableInternal.hasActiveObservers()) {
-            workerHandler.postDelayed(request, 1000)
         }
     }
 }
